@@ -1,0 +1,11 @@
+# General Config
+Options -Indexes +FollowSymLinks
+
+# Start module
+RewriteEngine On
+
+# Redirection index.php (Front Controller)
+# If no file exists
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]

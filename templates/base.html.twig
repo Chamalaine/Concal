@@ -12,8 +12,21 @@
         {% block javascripts %}
             {#{{ encore_entry_script_tags('app') }}#}
         {% endblock %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
     </head>
     <body>
+        <nav class="navbar">
+            {% if app.user %}
+                <a href="{{ path('app_logout') }}">Deconnexion</a>
+            {% endif %}
+            {%  else %}
+                <a href="{{ path('app_login') }}">Connexion</a>
+                <a href="{{ path('app_register') }}">Inscription</a>
+            {% endelse %}
+
+
+        </nav>
         {% block body %}{% endblock %}
     </body>
 </html>
