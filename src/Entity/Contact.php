@@ -43,8 +43,7 @@ class Contact
     private $note;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="contacts")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="string", length=60)
      */
     private $category;
 
@@ -113,12 +112,12 @@ class Contact
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getCategory(): ?string
     {
         return $this->category;
     }
 
-    public function setCategory(?Category $category): self
+    public function setCategory(?string $category): self
     {
         $this->category = $category;
 

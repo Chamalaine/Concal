@@ -19,11 +19,11 @@
         <nav class="navbar">
             {% if app.user %}
                 <a href="{{ path('app_logout') }}">Deconnexion</a>
-            {% endif %}
+                <a href="{{ path('app_contact') }}">Contacts</a>
             {%  else %}
                 <a href="{{ path('app_login') }}">Connexion</a>
                 <a href="{{ path('app_register') }}">Inscription</a>
-            {% endelse %}
+            {% endif %}
 
 
         </nav>

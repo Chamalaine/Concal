@@ -16,6 +16,9 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Symfony\Component\Mailer\Bridge\Google\Smtp\GmailTransport;
+use Symfony\Component\Mailer\Mailer;
+
 
 class SecurityController extends AbstractController
 {
@@ -44,6 +47,10 @@ class SecurityController extends AbstractController
                 )
             );
 
+            $user->setRegisterDate( new \DateTime('now'));
+            $user->setLastConnect(new \DateTime('now'));
+            $user->setAccept(true);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
@@ -53,7 +60,7 @@ class SecurityController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('surassur.amc@gmail.com', 'Concal Mailer'))
                     ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Confirmer votre Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             // do anything else you need here, like send an email
@@ -88,9 +95,9 @@ class SecurityController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', 'Votre adresse email est verifiée.');
 
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('home');
     }
 
     /**
@@ -117,4 +124,6 @@ class SecurityController extends AbstractController
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
+
+
 }
