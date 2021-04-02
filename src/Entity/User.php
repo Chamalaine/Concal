@@ -7,11 +7,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @Vich\Uploadable
  */
 class User implements UserInterface
 {
@@ -82,6 +88,21 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
+
+    /**
+     * @var File|null
+     * @Vich\UploadableField(mapping="user_image", fileNameProperty="filename")
+     */
+    private $imageFile;
+
+
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255)
+     */
+    private $filename;
+
 
     public function __construct()
     {
@@ -291,4 +312,37 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|null $imageFile
+     * @return User
+     */
+    public function setImageFile(?File $imageFile): User
+    {
+        $this->imageFile = $imageFile;
+        return $this;
+    }
+
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+
+    public function setFilename(?string $filename): self
+    {
+        $this->filename = $filename;
+        return $this;
+    }
+
+
 }

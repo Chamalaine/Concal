@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CalendarController extends AbstractController
 {
     /**
-     * @Route("/calendar", name="calendar")
+     * @Route("/calendar", name="app_calendar")
      */
     public function index(): Response
     {

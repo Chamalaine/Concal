@@ -20,6 +20,7 @@ use Symfony\Component\Mailer\Bridge\Google\Smtp\GmailTransport;
 use Symfony\Component\Mailer\Mailer;
 
 
+
 class SecurityController extends AbstractController
 {
     private $emailVerifier;
@@ -47,6 +48,8 @@ class SecurityController extends AbstractController
                 )
             );
 
+
+
             $user->setRegisterDate( new \DateTime('now'));
             $user->setLastConnect(new \DateTime('now'));
             $user->setAccept(true);
@@ -55,7 +58,6 @@ class SecurityController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('surassur.amc@gmail.com', 'Concal Mailer'))
@@ -63,14 +65,8 @@ class SecurityController extends AbstractController
                     ->subject('Confirmer votre Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            // do anything else you need here, like send an email
 
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,
-                $request,
-                $authenticator,
-                'main' // firewall name in security.yaml
-            );
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -125,5 +121,19 @@ class SecurityController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
+    /**
+     * @Route("/profile/{id}", name="app_profile",  methods={"GET"})
+     */
+    public function showProfile(User $user):Response
+    {
+        $session=$this->getUser();
 
+        if($user!=$session){
+            return $this->redirectToRoute('Home');
+        }
+
+        return $this->render('user/profile.html.twig', [
+            'user' => $user
+        ]);
+    }
 }

@@ -2,15 +2,31 @@
 
 {% block title %}Calendrier{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css" integrity="sha256-ejA/z0dc7D+StbJL/0HAnRG/Xae3yS2gzg0OAnIURC4=" crossorigin="anonymous">
+{% endblock %}
+
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.js" integrity="sha256-IrEwgwFBWa3kUOm8+TXmylcQ4oUJn58Iy5V7K39TnT0=" crossorigin="anonymous"></script>
+    <script>
+        window.onload = () =>{
+            let calendarElt = document.querySelector("#calendar")
+
+            let calendar = new FullCalendar.Calendar(calendarElt, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                timeZone: 'Europe/Paris',
+            })
+
+            calendar.render();
+        }
+    </script>
+{% endblock %}
+
+
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Calendrier</h1>
-
+<div id="calendar">
 
 </div>
 {% endblock %}
