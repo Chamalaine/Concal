@@ -17,7 +17,22 @@
                 initialView: 'dayGridMonth',
                 locale: 'fr',
                 timeZone: 'Europe/Paris',
-            })
+                events: {{ calendar|raw }},
+                customButtons: {
+                    addEvent:{
+                        text: 'Créer un événement',
+                        click: function() {
+                            window.location.href ="{{ path('event_add') }}"
+                        }
+                    }
+                },
+                headerToolbar: {
+                    start:'prev,next today',
+                    center: 'title',
+                    end: 'addEvent, dayGridMonth,timeGridWeek,timeGridDay'
+                }
+            }
+            )
 
             calendar.render();
         }

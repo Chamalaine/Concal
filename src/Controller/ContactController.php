@@ -42,6 +42,8 @@ class ContactController extends AbstractController
 
         return $this->render("contact/contact-form.html.twig", [
             "contactForm" => $form->createView(),
+            'FormName' => "Ajouter le Contact",
+
         ]);
     }
 
@@ -61,16 +63,26 @@ class ContactController extends AbstractController
      */
     public function ContactEdit(Request $request, Contact $contact): Response
     {
+        $form = $this->createForm(ContactFormType::class, $contact);
+        $form->handleRequest($request);
 
-        if ($this->isCsrfTokenValid('delete'.$assure->getId(), $request->request->get('_token'))) {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->remove($assure);
-                $entityManager->flush();
-            }
 
-        $this->addFlash('success','Assuré supprimé avec succes');
 
-        return $this->redirectToRoute('assure_index');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success','Contact Edité avec succès');
+
+            return $this->redirectToRoute('contact_show', [
+                'id' => $contact->getId(),
+            ]);
+        }
+
+        return $this->render('contact/contact-form.html.twig', [
+            'contact' => $contact,
+            'contactForm' => $form->createView(),
+            'FormName' => "Editer le Contact",
+        ]);
     }
 
     /**

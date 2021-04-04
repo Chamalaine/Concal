@@ -38,7 +38,7 @@
         <tr>
             <td>{{ contact.lastName }}</td>
             <td>{{ contact.firstName }}</td>
-            <td>{{ contact.email }}</td>
+            <td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.category }}</td>
             <td><a href="{{ path('contact_show', { 'id': contact.id}) }}">Détails</a>

@@ -21,48 +21,53 @@
 
     </head>
     <body>
+        <header>
+            <nav class="navbar justify-content-between navbar-expand-lg navbar-light bg-light">
+                <span class="navbar-brand mb-0 h1">Concal</span>
 
-        <nav class="navbar justify-content-between navbar-expand-lg navbar-light bg-light">
-            <span class="navbar-brand mb-0 h1">Concal</span>
+                <ul class="navbar-nav justify-content-end">
 
-            <ul class="navbar-nav justify-content-end">
+                {% if app.user %}
 
-            {% if app.user %}
-
-                <li class="nav-item">
-                <a class="link m-3" href="{{ path('app_contact') }}">Contacts</a>
-                </li>
-
-
-                <li class="nav-item">
-                    <a class="link m-3" href="{{ path('app_calendar') }}">Agenda</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="link m-3" href="{{ path('app_profile', { 'id': app.user.id}) }}">Profile</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="link m-3" href="{{ path('app_logout') }}">Deconnexion</a>
-                </li>
+                    <li class="nav-item">
+                    <a class="link m-3" href="{{ path('app_contact') }}">Contacts</a>
+                    </li>
 
 
-            {%  else %}
-                <li class="nav-item">
-                <a class="link m-3" href="{{ path('app_login') }}">Connexion</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="link m-3" href="{{ path('app_calendar') }}">Agenda</a>
+                    </li>
 
-                <li class="nav-item">
-                <a class="link m-3" href="{{ path('app_register') }}">Inscription</a>
-                </li>
-            {% endif %}
-        </nav>
+                    <li class="nav-item">
+                        <a class="link m-3" href="{{ path('app_profile', { 'id': app.user.id}) }}">Profile</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="link m-3" href="{{ path('app_logout') }}">Deconnexion</a>
+                    </li>
 
 
-        {% block body %}{% endblock %}
+                {%  else %}
+                    <li class="nav-item">
+                    <a class="link m-3" href="{{ path('app_login') }}">Connexion</a>
+                    </li>
+
+                    <li class="nav-item">
+                    <a class="link m-3" href="{{ path('app_register') }}">Inscription</a>
+                    </li>
+                {% endif %}
+            </nav>
+        </header>
+
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+
+        <footer class="navbar navbar-dark bg-dark fixed-bottom">
+
+        </footer>
     </body>
 
-<footer class="navbar navbar-dark bg-dark fixed-bottom">
 
-</footer>
 </html>

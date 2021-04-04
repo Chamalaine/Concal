@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajout de contact{% endblock %}
+{% block title %}{{ FormName }}{% endblock %}
 
 {% block body %}
 <style>
@@ -9,7 +9,7 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Ajout de contact</h1>
+    <h1>{{ FormName }}</h1>
     {{ form_start(contactForm) }}
     {{ form_row(contactForm.firstName, {label: 'Prenom'}) }}
     {{ form_row(contactForm.lastName, {label: "Nom"}) }}

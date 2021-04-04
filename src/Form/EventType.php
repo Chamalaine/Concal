@@ -4,26 +4,19 @@ namespace App\Form;
 
 use App\Entity\Event;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EventFormType extends AbstractType
+class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('title')
-            ->add('Start', DateTimeType::class, [
-                'date_widget' => 'single_text'
-            ])
-            ->add('End', DateTimeType::class, [
-                'date_widget' => 'single_text'
-            ])
+            ->add('Start')
+            ->add('End')
             ->add('description')
-            ->add('submit', SubmitType::class)
-
+            ->add('users')
         ;
     }
 

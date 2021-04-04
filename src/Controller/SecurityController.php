@@ -136,4 +136,16 @@ class SecurityController extends AbstractController
             'user' => $user
         ]);
     }
+
+    /**
+     * @Route("/profile/password", name="profile_changepassword")
+     */
+    public function modifyPassword(User $user):Request
+    {
+
+
+        return $this->render('user/password.html.twig', [
+            'changePassword' => $form->createView(),
+        ]);
+    }
 }
