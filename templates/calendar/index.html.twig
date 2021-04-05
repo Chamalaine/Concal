@@ -14,7 +14,7 @@
             let calendarElt = document.querySelector("#calendar")
 
             let calendar = new FullCalendar.Calendar(calendarElt, {
-                initialView: 'dayGridMonth',
+                initialView: 'timeGridWeek',
                 locale: 'fr',
                 timeZone: 'Europe/Paris',
                 events: {{ calendar|raw }},
@@ -30,7 +30,12 @@
                     start:'prev,next today',
                     center: 'title',
                     end: 'addEvent, dayGridMonth,timeGridWeek,timeGridDay'
-                }
+                },
+                    eventClick: function(info) {
+
+                        window.location.href ="{{ path('event_show', { 'id': 0}) }}"+info.event.id
+                    }
+
             }
             )
 

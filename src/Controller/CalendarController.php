@@ -51,6 +51,8 @@ class CalendarController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($contact);
             $entityManager->flush();
+
+            return $this->redirectToRoute("app_calendar");
         }
 
         return $this->render("calendar/event-form.html.twig", [
@@ -59,4 +61,17 @@ class CalendarController extends AbstractController
 
         ]);
     }
+
+    /**
+     * @Route("/calendar/{id}", name="event_show")
+     * @return Response
+     */
+    public function EventShow(Event $event): Response
+    {
+        return $this->render("calendar/show.html.twig", [
+            'event' =>$event
+        ]);
+    }
+
+
 }
