@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Form\ChangePasswordFormType;
+use App\Form\ModifyPasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -35,6 +38,10 @@ class SecurityController extends AbstractController
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home');
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -49,7 +56,7 @@ class SecurityController extends AbstractController
             );
 
 
-
+            
             $user->setRegisterDate( new \DateTime('now'));
             $user->setLastConnect(new \DateTime('now'));
             $user->setAccept(true);
@@ -66,6 +73,7 @@ class SecurityController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
+            $this->addFlash('success','Confirmez votre inscription dans vos mails');
             return $this->redirectToRoute('home');
         }
 
@@ -101,9 +109,9 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
+             return $this->redirectToRoute('home');
+         }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -118,6 +126,7 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
@@ -126,6 +135,7 @@ class SecurityController extends AbstractController
      */
     public function showProfile(User $user):Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $session=$this->getUser();
 
         if($user!=$session){
@@ -138,14 +148,48 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/profile/password", name="profile_changepassword")
+     * @Route("/profile/password/{id}", name="profile_modifypassword")
+     * @param User $user
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return Response
      */
-    public function modifyPassword(User $user):Request
+    public function modifyPassword(User $user, Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+        $form = $this->createForm(ModifyPasswordType::class, $user);
 
 
-        return $this->render('user/password.html.twig', [
-            'changePassword' => $form->createView(),
-        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $oldPassword = $request->request->get('modify_password')['oldPassword'];
+
+            // Si l'ancien mot de passe est bon
+            if ($passwordEncoder->isPasswordValid($user, $oldPassword)) {
+
+                $user->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+                $em->persist($user);
+                $em->flush();
+
+                $this->addFlash('success', 'Votre mot de passe à bien été changé !');
+
+                return $this->render('home\index.html.twig');
+            }
+            else {
+                $form->addError(new FormError('Ancien mot de passe incorrect'));
+            }
+        }
+
+        return $this->render("user/modifyPassword.html.twig", array(
+            'Form' => $form->createView(),
+        ));
     }
 }

@@ -26,7 +26,7 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'Vous devez accepter nos condititions',
+                        'message' => 'Vous devez accepter nos conditions',
                     ]),
                 ],
             ])
@@ -49,7 +49,10 @@ class RegistrationFormType extends AbstractType
             ->add("firstName")
             ->add("lastName")
             ->add("phone")
-            ->add('imageFile',VichImageType::class,['required' => false])
+            ->add('imageFile',VichImageType::class,[
+                'required' => false,
+                'label' =>"Image de Profile"
+            ])
             ->add("S'inscrire", SubmitType::class)
 
         ;

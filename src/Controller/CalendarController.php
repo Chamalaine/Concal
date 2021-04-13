@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Form\EventFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +17,8 @@ class CalendarController extends AbstractController
      */
     public function index(): Response
     {
-        $events = $this->getDoctrine()->getRepository(Event::class)->findAll();
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $events = $this->getDoctrine()->getRepository(User::class)->find($this->getUser())->getEvents();
 
         $calendar = [];
 
@@ -43,14 +45,19 @@ class CalendarController extends AbstractController
      */
     public function EventAdd(Request $request): Response
     {
-        $contact = new Event();
-        $form = $this->createForm(EventFormType::class, $contact);
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $event = new Event();
+        $form = $this->createForm(EventFormType::class, $event);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($contact);
+            $event->addUser($this->getUser());
+            $entityManager->persist($event);
             $entityManager->flush();
+
+            $this->addFlash('success','Evenement ajouté avec succes');
 
             return $this->redirectToRoute("app_calendar");
         }
@@ -64,12 +71,68 @@ class CalendarController extends AbstractController
 
     /**
      * @Route("/calendar/{id}", name="event_show")
+     * @param Event $event
      * @return Response
      */
     public function EventShow(Event $event): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         return $this->render("calendar/show.html.twig", [
             'event' =>$event
+        ]);
+    }
+
+    /**
+     * @Route("/calendar/delete/{id}", name="event_delete", methods={"DELETE"})
+     * @param Request $request
+     * @param Event $event
+     * @return Response
+     */
+    public function EventDelete(Request $request, Event $event): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($event);
+            $entityManager->flush();
+        }
+
+        $this->addFlash('success','Evenement supprimé avec succes');
+
+        return $this->redirectToRoute('app_calendar');
+
+    }
+
+    /**
+     * @Route("/event/edit/{id}", name="event_edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param Event $event
+     * @return Response
+     */
+    public function ContactEdit(Request $request, Event $event): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $form = $this->createForm(EventFormType::class, $event);
+        $form->handleRequest($request);
+
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success','Evenement Edité avec succès');
+
+            return $this->redirectToRoute('event_show', [
+                'id' => $event->getId(),
+            ]);
+        }
+
+        return $this->render('calendar/event-form.html.twig', [
+            'event' => $event,
+            'eventForm' => $form->createView(),
+            'FormName' => "Editer l'évenement'",
         ]);
     }
 

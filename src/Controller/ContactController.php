@@ -16,6 +16,7 @@ class ContactController extends AbstractController
      */
     public function index(): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $contacts = $this->getDoctrine()->getRepository(Contact::class)->findAll();
 
 
@@ -30,6 +31,7 @@ class ContactController extends AbstractController
      */
     public function ContactAdd(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $contact = new Contact();
         $form = $this->createForm(ContactFormType::class, $contact);
         $form->handleRequest($request);
@@ -38,6 +40,10 @@ class ContactController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($contact);
             $entityManager->flush();
+
+            $this->addFlash('success','Contact ajouté avec succes');
+
+            return $this->redirectToRoute("app_contact");
         }
 
         return $this->render("contact/contact-form.html.twig", [
@@ -49,10 +55,12 @@ class ContactController extends AbstractController
 
     /**
      * @Route("/contact/{id}", name="contact_show")
+     * @param Contact $contact
      * @return Response
      */
     public function ContactShow(Contact $contact): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         return $this->render("contact/show.html.twig", [
             'contact' =>$contact
         ]);
@@ -60,9 +68,13 @@ class ContactController extends AbstractController
 
     /**
      * @Route("/contact/edit/{id}", name="contact_edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param Contact $contact
+     * @return Response
      */
     public function ContactEdit(Request $request, Contact $contact): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $form = $this->createForm(ContactFormType::class, $contact);
         $form->handleRequest($request);
 
@@ -86,10 +98,14 @@ class ContactController extends AbstractController
     }
 
     /**
-     * @Route("/contact/delete/{id}", name="contact_delete", methods={"DELETE"})
+     * @Route("/contact/delete/{id}", name="contact_delete")
+     * @param Request $request
+     * @param Contact $contact
+     * @return Response
      */
     public function ContactDelete(Request $request, Contact $contact): Response
     {
+
         if ($this->isCsrfTokenValid('delete'.$contact->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($contact);

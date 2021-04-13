@@ -7,5 +7,7 @@
     <div class="example-wrapper">
         <h1>Evenement</h1>
         <h2>{{ event.title }}</h2>
+        {{ include('calendar/delete-form.html.twig') }}
+        <a href="{{ path('event_edit', { 'id': event.id}) }}">Editer</a>
     </div>
 {% endblock %}

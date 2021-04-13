@@ -4,9 +4,18 @@
 
 {% block body %}
 
-    <div class="example-wrapper">
-        <h1>Contact</h1>
-        <h2>{{ user.lastName }}</h2>
-        <h2>{{ user.firstName }}</h2>
-    </div>
+    <table class="table justify-content-center">
+        <tr>
+            <th>{{ user.lastName }}</th>
+        </tr>
+        <tr>
+            <th>{{ user.firstName }}</th>
+        </tr>
+        <tr>
+            <th><img id="imageProfile" src={{asset('images/users/'~user.Filename)}}></th>
+        </tr>
+    </table>
+        <a href={{ path("profile_modifypassword", {"id" : user.id}) }}>Modifier le mot de passe</a>
+
+    </table>
 {% endblock %}

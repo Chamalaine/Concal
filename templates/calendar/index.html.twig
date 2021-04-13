@@ -9,6 +9,7 @@
 
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.js" integrity="sha256-IrEwgwFBWa3kUOm8+TXmylcQ4oUJn58Iy5V7K39TnT0=" crossorigin="anonymous"></script>
+
     <script>
         window.onload = () =>{
             let calendarElt = document.querySelector("#calendar")
@@ -16,7 +17,10 @@
             let calendar = new FullCalendar.Calendar(calendarElt, {
                 initialView: 'timeGridWeek',
                 locale: 'fr',
+                lang: 'fr',
                 timeZone: 'Europe/Paris',
+                handleWindowResize:true,
+                height:1000,
                 events: {{ calendar|raw }},
                 customButtons: {
                     addEvent:{
@@ -46,6 +50,14 @@
 
 
 {% block body %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+
 <div id="calendar">
 
 </div>

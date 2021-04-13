@@ -18,12 +18,24 @@ class EventFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
+            ->add('title',null,array(
+                'label' => 'Titre',
+            ))
             ->add('Start', DateTimeType::class, [
-                'date_widget' => 'single_text'
+                'date_widget' => 'single_text',
+                'placeholder' => [
+                    'year' => 'Année', 'month' => 'Mois', 'day' => 'Jour',
+                    'hour' => 'Heure', 'minute' => 'Minute', 'second' => 'Seconde',
+                ],
+                'label' => 'Début'
             ])
             ->add('End', DateTimeType::class, [
-                'date_widget' => 'single_text'
+                'date_widget' => 'single_text',
+                'placeholder' => [
+                    'year' => 'Année', 'month' => 'Mois', 'day' => 'Jour',
+                    'hour' => 'Heure', 'minute' => 'Minute', 'second' => 'Seconde',
+                ],
+                'label' => 'Fin',
             ])
             ->add('description')
             ->add('users', EntityType::class, [
@@ -33,9 +45,14 @@ class EventFormType extends AbstractType
                         ->orderBy('u.email', 'ASC');
                 },
                 'choice_label' => 'username',
-                'multiple' =>"true"
-            ])
-            ->add('submit', SubmitType::class)
+                'multiple' =>true,
+                'expanded' => true,
+                    'label'=>'Collaborateurs',
+            ]
+            )
+            ->add('submit', SubmitType::class,array(
+                'label' => 'Enregistrer'
+            ))
 
         ;
     }
